@@ -1,0 +1,12 @@
+# Eclipse
+.settings/
+.classpath
+
+# Compiled Java files
+*.class
+build/
+bin/
+target/
+
+# Eclipse metadata
+.factorypath

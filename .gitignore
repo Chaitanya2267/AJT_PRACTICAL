@@ -1,0 +1,14 @@
+# Eclipse
+.settings/
+.classpath
+
+# Java compiled files
+*.class
+
+# Build output
+build/
+bin/
+target/
+
+# IDE metadata
+.factorypath
