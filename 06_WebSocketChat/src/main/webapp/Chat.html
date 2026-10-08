@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Chat</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #chat {
+            width: 400px;
+            height: 300px;
+            border: 1px solid black;
+            margin: 20px auto;
+            padding: 10px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        input {
+            padding: 10px;
+            width: 280px;
+        }
+
+        button {
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Real-Time WebSocket Chat</h2>
+
+    <div id="chat"></div>
+
+    <input type="text" id="message"
+           placeholder="Enter your message">
+
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+
+        let socket = new WebSocket(
+            "ws://" + window.location.host +
+            "/06_WebSocketChat/chat"
+        );
+
+        socket.onopen = function() {
+            document.getElementById("chat").innerHTML +=
+                "<p><b>Connected to server</b></p>";
+        };
+
+        socket.onmessage = function(event) {
+            document.getElementById("chat").innerHTML +=
+                "<p>" + event.data + "</p>";
+        };
+
+        socket.onclose = function() {
+            document.getElementById("chat").innerHTML +=
+                "<p><b>Disconnected from server</b></p>";
+        };
+
+        socket.onerror = function() {
+            document.getElementById("chat").innerHTML +=
+                "<p><b>WebSocket error</b></p>";
+        };
+
+        function sendMessage() {
+
+            let message =
+                document.getElementById("message").value;
+
+            if (message.trim() !== "") {
+
+                socket.send(message);
+
+                document.getElementById("message").value = "";
+            }
+        }
+
+    </script>
+
+</body>
+</html>
