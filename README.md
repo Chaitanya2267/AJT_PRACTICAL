@@ -10,8 +10,8 @@
 <body>
 	<h2>Servlet Example</h2>
 	<form action="HelloServlet" method="post">
-		Enter Name: <input type="text" name="name" required> <input
-			type="submit" value="Submit">
+		Enter Name: <input type="text" name="name" required>
+		<input type="submit" value="Submit">
 	</form>
 	<br>
 </body>
