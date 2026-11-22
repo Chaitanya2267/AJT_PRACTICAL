@@ -388,8 +388,6 @@ public class ChatServer {
 	public void onOpen(Session session) {
 		users.add(session);
 		System.out.println("User Connected");
-		session.getAsyncRemote().sendText("Welcome to Chat!");
-		System.out.println("Total Users: " + users.size());
 	}
 	
 	@OnMessage
