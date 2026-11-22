@@ -331,3 +331,86 @@ throws ServletException, IOException {
 	}
 }
 ```
+
+06_websocket
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2>Real-Time Application</h2>
+	<input type="text" id="msg" placeholder="Enter your message">
+	<button onclick="sendMessage()">Send</button>
+	<div id="chat"></div>
+	
+	<script>
+		// var protocol = location.protocol === "https:" ? "wss://" : "ws://";
+		// var path = location.pathname;
+		// var context = path.substring(0, path.lastIndexOf("/"));
+		// var socket = new WebSocket(protocol + location.host + context + "/chat");
+		
+		var socket = new WebSocket("ws://localhost:8080/06_practice/chat");
+		
+		socket.onmessage = function(event) {
+			var p = document.createElement("p");
+			p.textContent = event.data;
+			document.getElementById("chat").appendChild(p);
+		};
+		
+		function sendMessage() {
+			var msg = document.getElementById("msg").value;
+			if (socket.readyState === WebSocket.OPEN && msg.trim() != "") {
+				socket.send(msg);
+				document.getElementById("msg").value = "";
+			}
+		}
+	</script>
+</body>
+</html>
+```
+
+```java
+import javax.websocket.*;
+import javax.websocket.server.*;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+@ServerEndpoint("/chat")
+public class ChatServer {
+	private static final Set<Session> users = ConcurrentHashMap.newKeySet();
+	
+	@OnOpen
+	public void onOpen(Session session) {
+		users.add(session);
+		System.out.println("User Connected");
+		session.getAsyncRemote().sendText("Welcome to Chat!");
+		System.out.println("Total Users: " + users.size());
+	}
+	
+	@OnMessage
+	public void onMessage(String message, Session session) {
+		for(Session user : users) {
+			if (user.isOpen()) {
+				user.getAsyncRemote().sendText(message);
+			}
+		}
+	}
+	
+	@OnClose
+	public void onClose(Session session) {
+		users.remove(session);
+		System.out.println("User Disconnected");
+	}
+	
+	@OnError
+	public void onError(Session session, Throwable error) {
+		if (session != null) users.remove(session);
+		error.printStackTrace();
+	}
+}
+```
